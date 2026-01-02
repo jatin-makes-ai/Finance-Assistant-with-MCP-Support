@@ -1,19 +1,28 @@
-# Finance Buddy - Financial Advisor Agent
+# Finance Buddy 💸
 
-A simple and understandable financial advisor application using OpenAI Agents SDK with MCP integration for Alpha Vantage tools.
+A smart financial advisor agent powered by **OpenAI Agents** and **Alpha Vantage MCP**.
 
-## Project Structure
+## 🚀 Features
 
-```
+- **AI Financial Advisor**: An intelligent agent capable of answering financial queries.
+- **Real-time Data**: Integrates with Alpha Vantage for live stock market data via MCP (Model Context Protocol).
+- **Dual Interface**:
+  - **Web UI**: User-friendly chat interface using Gradio.
+  - **CLI**: Command-line tool for quick testing.
+
+## 📂 Project Structure
+
+```text
 Financial-Advisor/
-├── ai-agents/
-│   └── finance-buddy.py    # Agent configuration and setup
-├── app.py                   # Gradio chat interface
-├── requirements.txt         # Python dependencies
-└── README.md               # This file
+├── ai-agents/          # Agent logic and configuration
+├── app.py              # Gradio Web Interface
+├── main.py             # CLI Runner for testing
+├── mcp_manager.py      # MCP Server connection manager
+├── mcp.json            # MCP configurations
+└── requirements.txt    # Dependencies
 ```
 
-## Setup Instructions
+## 🛠️ Setup
 
 ### 1. Install Dependencies
 
@@ -21,94 +30,54 @@ Financial-Advisor/
 pip install -r requirements.txt
 ```
 
-### 2. Set Up Environment Variables
+### 2. Configure Environment
 
-You can set environment variables in two ways:
-
-#### Option 1: Using a `.env` file (Recommended)
-
-Create a `.env` file in the project root directory with the following content:
+Create a `.env` file in the root directory:
 
 ```env
-OPENAI_API_KEY=your-openai-api-key-here
-FINANCE_AGENT_MODEL=gpt-4o-mini
-ALPHA_VANTAGE_API_KEY=your-alpha-vantage-api-key-here
+OPENAI_API_KEY=your_openai_key
+ALPHA_VANTAGE_API_KEY=your_alphavantage_key
+FINANCE_AGENT_MODEL=gpt-4o-mini  # Optional
 ```
 
-**Note:** Make sure to add `.env` to your `.gitignore` file to keep your API keys secure!
+## 🏃 Usage
 
-#### Option 2: Set Environment Variables Directly
+### Run Web Interface
 
-**On Windows (PowerShell):**
-```powershell
-$env:OPENAI_API_KEY="your-openai-api-key-here"
-$env:FINANCE_AGENT_MODEL="gpt-4o"  # Optional, defaults to gpt-4o-mini
-$env:ALPHA_VANTAGE_API_KEY="your-alpha-vantage-api-key-here"
-```
-
-**On Windows (Command Prompt):**
-```cmd
-set OPENAI_API_KEY=your-openai-api-key-here
-set FINANCE_AGENT_MODEL=gpt-4o
-set ALPHA_VANTAGE_API_KEY=your-alpha-vantage-api-key-here
-```
-
-**On Linux/Mac:**
-```bash
-export OPENAI_API_KEY="your-openai-api-key-here"
-export FINANCE_AGENT_MODEL="gpt-4o"  # Optional, defaults to gpt-4o-mini
-export ALPHA_VANTAGE_API_KEY="your-alpha-vantage-api-key-here"
-```
-
-**Environment Variables:**
-- `OPENAI_API_KEY` (Required): Your OpenAI API key for the agent
-- `FINANCE_AGENT_MODEL` (Optional): The OpenAI model to use (defaults to `gpt-4o-mini` if not set)
-- `ALPHA_VANTAGE_API_KEY` (Optional): Your Alpha Vantage API key for stock data via MCP
-
-### 3. Alpha Vantage MCP Server
-
-The application uses Alpha Vantage's remote MCP server at `https://mcp.alphavantage.co/mcp`. No additional installation is required - just set your `ALPHA_VANTAGE_API_KEY` environment variable.
-
-### 4. Run the Application
+Launch the Gradio chat app:
 
 ```bash
 python app.py
 ```
+Access at: `http://localhost:7860`
 
-The Gradio interface will launch in your browser at `http://localhost:7860`
+### Run CLI Test
 
-## How It Works
+Execute a test query in the terminal:
 
-1. **Finance Buddy Agent** (`ai-agents/finance-buddy.py`):
-   - Contains the agent's configuration, model settings, and instructions
-   - Reads the model from `FINANCE_AGENT_MODEL` environment variable (defaults to `gpt-4o-mini`)
-   - Sets up MCP integration with Alpha Vantage remote server at `https://mcp.alphavantage.co/mcp`
-   - Uses OpenAI Agents SDK to create the agent
+```bash
+python main.py
+```
 
-2. **Gradio Interface** (`app.py`):
-   - Provides a simple chat interface to interact with Finance Buddy
-   - Handles conversation history
-   - Uses trace logging to monitor agent execution
-   - Falls back to direct OpenAI API calls if Agents SDK is not available
+## 🔧 Configuration
 
-## Features
+The project uses `mcp.json` to configure MCP servers. By default, it is set up for Alpha Vantage:
 
-- Simple and understandable code structure
-- MCP integration for Alpha Vantage financial data tools
-- Friendly chat interface using Gradio
-- Fallback support if Agents SDK is not available
+```json
+{
+  "servers": {
+    "alphavantage": {
+      "type": "http",
+      "url": "https://mcp.alphavantage.co/mcp?apikey=YOUR_API_KEY"
+    }
+  }
+}
+```
 
-## Notes
+## ⚠️ Troubleshooting
 
-- The agent will use MCP tools from Alpha Vantage when `ALPHA_VANTAGE_API_KEY` is set
-- The model can be configured via `FINANCE_AGENT_MODEL` environment variable (defaults to `gpt-4o-mini`)
-- Agent execution is traced and logged for debugging purposes
-- If the OpenAI Agents SDK is not installed, the app will fall back to direct OpenAI API calls
-- Always consult with a licensed financial advisor for major investment decisions
+- **Connection Errors**: Ensure your API keys in `.env` are correct.
+- **Dependencies**: Re-run `pip install -r requirements.txt` if modules are missing.
 
-## Troubleshooting
-
-- **Import errors**: Make sure all dependencies are installed with `pip install -r requirements.txt`
-- **API key errors**: Verify your environment variables are set correctly
-- **MCP server errors**: Verify your `ALPHA_VANTAGE_API_KEY` is set correctly for the remote MCP server
-
+---
+*Disclaimer: This is an AI tool. Always consult a licensed financial advisor for investment decisions.*
