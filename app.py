@@ -43,14 +43,45 @@ async def get_or_create_agent():
     print("✅ System Ready.")
     return state.agent
 
+def extract_text(content):
+    """Extract text from Gradio content which can be a string or dict/list."""
+    if isinstance(content, str):
+        return content
+    elif isinstance(content, dict):
+        return content.get("text", str(content))
+    elif isinstance(content, list) and len(content) > 0:
+        return extract_text(content[0])
+    return str(content)
+
 async def chat_handler(message, history):
     """Gradio handler that ensures a stable connection."""
     try:
         # Get agent in the current loop
         agent = await get_or_create_agent()
         
-        # Run the agent - Note: We skip the 'trace' wrapper to avoid the 400 error
-        result = await Runner.run(agent, message)
+        # Build conversation context as a simple string
+        # This is simpler and more reliable than complex message formatting
+        context = ""
+        for item in history:
+            if isinstance(item, dict):
+                # Gradio 5+ "messages" format
+                role = item["role"]
+                content = extract_text(item["content"])
+                if role == "user":
+                    context += f"User: {content}\n"
+                else:
+                    context += f"Assistant: {content}\n"
+            else:
+                # Gradio 4- "tuples" format (user_msg, bot_msg)
+                user_msg, bot_msg = item
+                context += f"User: {user_msg}\n"
+                context += f"Assistant: {bot_msg}\n"
+        
+        # Add current message
+        full_input = context + f"User: {message}\n"
+        
+        # Run the agent with simple string input
+        result = await Runner.run(agent, full_input.strip())
         return result.final_output
     
     except Exception as e:
